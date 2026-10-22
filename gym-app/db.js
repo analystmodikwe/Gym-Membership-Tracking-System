@@ -1,4 +1,4 @@
-// db.js
+
 // Creates the SQLite database, the tables, and seeds the plans.
 
 const Database = require("better-sqlite3");

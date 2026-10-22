@@ -1,4 +1,4 @@
-// server.js
+
 // Entry point: starts Express and serves the API plus the frontend.
 
 const express = require("express");
