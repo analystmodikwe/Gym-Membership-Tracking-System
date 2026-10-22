@@ -97,3 +97,57 @@ th { font-size: 0.8rem; text-transform: uppercase; color: #6b7280; }
 .badge.active { background: #dcfce7; color: #166534; }
 .badge.grace  { background: #fef3c7; color: #92400e; }
 .badge.denied { background: #fee2e2; color: #991b1b; }
+
+/* Stat cards: as many as fit per row, each at least 130px wide */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-number { font-size: 1.6rem; font-weight: 700; }
+.stat-label { font-size: 0.8rem; color: #6b7280; }
+.stat.warn .stat-number { color: #92400e; }
+.stat.bad .stat-number { color: #991b1b; }
+
+/* Breakdown bars */
+.bars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.bars-grid h3 { margin: 0 0 0.5rem; font-size: 0.95rem; }
+.bar-row { margin-bottom: 0.6rem; font-size: 0.85rem; }
+
+.bar-track {
+  background: #e5e7eb;
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+  margin-top: 0.2rem;
+}
+
+.bar-fill { background: #2563eb; height: 100%; }
+
+/* Plan cards */
+.plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.plan { border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; }
+.plan h3 { margin: 0; }
+.plan .price { font-size: 1.4rem; font-weight: 700; margin: 0.25rem 0 0.75rem; }
+.plan ul { margin: 0; padding-left: 1.1rem; font-size: 0.85rem; }
