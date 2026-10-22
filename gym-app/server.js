@@ -113,6 +113,87 @@ app.delete("/api/members/:id", (req, res) => {
   res.json({ message: "Member deleted" });
 });
 
+
+// GET /api/stats - all the numbers the dashboard needs in one request
+app.get("/api/stats", (req, res) => {
+  // 1. Total members
+  const total = db.prepare("SELECT COUNT(*) AS count FROM members").get().count;
+
+  // 2. Gender breakdown (SQL GROUP BY counts each gender)
+  const genderRows = db
+    .prepare("SELECT gender, COUNT(*) AS count FROM members GROUP BY gender")
+    .all();
+
+  // Start every gender at 0 so the frontend never gets a missing key
+  const gender = { Male: 0, Female: 0, Other: 0 };
+  genderRows.forEach((row) => (gender[row.gender] = row.count));
+
+  // 3. Age groups: CASE puts each age into a bucket, GROUP BY counts each bucket
+  const ageRows = db
+    .prepare(
+      `SELECT
+         CASE
+           WHEN age < 18  THEN 'Under 18'
+           WHEN age <= 25 THEN '18-25'
+           WHEN age <= 35 THEN '26-35'
+           WHEN age <= 50 THEN '36-50'
+           ELSE '51+'
+         END AS age_group,
+         COUNT(*) AS count
+       FROM members
+       GROUP BY age_group`
+    )
+    .all();
+
+  // Fixed order, with 0 for empty groups
+  const ageGroups = { "Under 18": 0, "18-25": 0, "26-35": 0, "36-50": 0, "51+": 0 };
+  ageRows.forEach((row) => (ageGroups[row.age_group] = row.count));
+
+  // 4. Members per plan. LEFT JOIN keeps plans that have 0 members
+  const plans = db
+    .prepare(
+      `SELECT p.name, COUNT(m.id) AS members
+       FROM plans p
+       LEFT JOIN members m ON m.plan_id = p.id
+       GROUP BY p.id`
+    )
+    .all();
+
+  // 5. Revenue: money collected from paid members vs still owed by unpaid ones
+  const revenue = db
+    .prepare(
+      `SELECT
+         COALESCE(SUM(CASE WHEN m.paid = 1 THEN p.price END), 0) AS collected,
+         COALESCE(SUM(CASE WHEN m.paid = 0 THEN p.price END), 0) AS outstanding
+       FROM members m
+       JOIN plans p ON p.id = m.plan_id`
+    )
+    .get();
+
+  // 6. Paid vs unpaid and access status. Status is computed in JS (not stored),
+  // so we fetch the members and run each one through getAccessStatus
+  const members = db.prepare("SELECT paid, due_date FROM members").all();
+
+  const access = { Active: 0, Grace: 0, Denied: 0 };
+  let paidCount = 0;
+
+  members.forEach((m) => {
+    if (m.paid) paidCount++;
+    access[getAccessStatus(m).status]++;
+  });
+
+  res.json({
+    total,
+    paid: paidCount,
+    unpaid: total - paidCount,
+    access,
+    gender,
+    ageGroups,
+    plans,
+    revenue,
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Gym app running at http://localhost:${PORT}`);
 });
