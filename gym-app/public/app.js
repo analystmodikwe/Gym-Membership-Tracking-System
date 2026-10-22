@@ -132,6 +132,7 @@ async function loadPlans() {
     option.textContent = `${plan.name} - R${plan.price}/month`;
     planSelect.appendChild(option);
   });
+    renderPlanCards(plans); // also show the plans section
 }
 
 // Loads members from the API and redraws the table
@@ -186,8 +187,11 @@ function renderMembers(members) {
     const statusCell = document.createElement("td");
     const badge = document.createElement("span");
     badge.className = `badge ${m.status.toLowerCase()}`;
+    const days = m.graceDaysLeft;
     badge.textContent =
-      m.status === "Grace" ? `Grace (${m.graceDaysLeft} days left)` : m.status;
+      m.status === "Grace"
+        ? `Grace (${days} ${days === 1 ? "day" : "days"} left)`
+        : m.status;
     statusCell.appendChild(badge);
     row.appendChild(statusCell);
 
@@ -210,14 +214,14 @@ function renderMembers(members) {
 // Tells the server a member has paid, then refreshes the table
 async function markPaid(id) {
   await fetch(`${API}/members/${id}/pay`, { method: "PATCH" });
-  loadMembers();
+  refresh(); // was loadMembers()
 }
 
 // Asks for confirmation, deletes the member, then refreshes the table
 async function deleteMember(id, name) {
   if (!confirm(`Delete ${name}?`)) return;
   await fetch(`${API}/members/${id}`, { method: "DELETE" });
-  loadMembers();
+  refresh(); // was loadMembers()
 }
 
 // Runs when the form is submitted
@@ -253,7 +257,7 @@ form.addEventListener("submit", async (event) => {
     }
 
     form.reset();
-    loadMembers();
+    refresh();
   } catch (err) {
     message.textContent = "Could not reach the server. Is it running?";
   }
@@ -261,4 +265,4 @@ form.addEventListener("submit", async (event) => {
 
 // Runs once when the page opens
 loadPlans();
-loadMembers();
+refresh(); // loads the members table AND the dashboard
