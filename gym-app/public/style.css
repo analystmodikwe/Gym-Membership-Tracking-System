@@ -1,0 +1,99 @@
+/* style.css - simple, clean layout */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+header {
+  background: #111827;
+  color: white;
+  padding: 1rem 2rem;
+}
+
+header h1 { margin: 0; font-size: 1.4rem; }
+
+main {
+  max-width: 1000px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+}
+
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 { margin-top: 0; }
+
+/* Form: fields wrap onto new lines on small screens */
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: end;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  gap: 0.25rem;
+}
+
+label.checkbox { flex-direction: row; align-items: center; }
+
+input, select {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+button:hover { background: #1d4ed8; }
+button.danger { background: #dc2626; }
+button.danger:hover { background: #b91c1c; }
+button.small { padding: 0.3rem 0.6rem; font-size: 0.8rem; margin-right: 0.25rem; }
+
+.message { min-height: 1.2rem; margin: 0.75rem 0 0; color: #dc2626; }
+
+/* Table: scrolls sideways on small screens instead of breaking the layout */
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; }
+
+th, td {
+  text-align: left;
+  padding: 0.6rem;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+th { font-size: 0.8rem; text-transform: uppercase; color: #6b7280; }
+
+/* Access status badges */
+.badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.badge.active { background: #dcfce7; color: #166534; }
+.badge.grace  { background: #fef3c7; color: #92400e; }
+.badge.denied { background: #fee2e2; color: #991b1b; }
