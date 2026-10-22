@@ -1,3 +1,23 @@
+# Dependencies (anyone can rebuild these with npm install)
 node_modules/
+
+# Build output
 dist/
-gym.db
+
+# SQLite database and its temporary files (db.js recreates and reseeds it on startup)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Secrets: never push these (you'll need this as soon as you add API keys or passwords)
+.env
+.env.*
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS clutter
+.DS_Store
+Thumbs.db
